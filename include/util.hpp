@@ -18,9 +18,9 @@ enum class NeighbourhoodType {
 
 struct QueueData {
 	std::vector<short> pathOrder;
-	int pathLength;
-	int anchorOne;
-	int anchorTwo;
+	int pathLength = 0;
+	int anchorOne = 0;
+	int anchorTwo = 0;
 };
 
 class Matrix {
@@ -29,13 +29,13 @@ public:
 	// wype³niane wierszami
 	std::vector<std::vector<int>> mat;
 
-	void loadFromFile(std::string fileName);
+	bool loadFromFile(std::string fileName);
 	void generate(int size);
 	void display();
 
 private:
-	void loadFromTXT(std::string fileName);
-	void loadFromATSP(std::string fileName);
+	bool loadFromTXT(std::string fileName);
+	bool loadFromATSP(std::string fileName);
 };
 
 struct Cache {
@@ -52,7 +52,7 @@ struct Cache {
 
 struct PathData {
 	std::vector<short> pathOrder;
-	int pathLength;
+	int pathLength = 0;
 
 	PathData() {}
 

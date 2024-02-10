@@ -18,31 +18,30 @@ enum class AlgorithmType {
 class Menu {
 public:
 	void mainMenu();
-	
-	// void benchmark(Matrix* matrix);
 
 private:
-	char option;
-	int value;
+	char option = 'a';
+	int value = 0;
 	std::string fileName = "";
+
 	Matrix matrix;
 
 	BruteForce bf;
 	DynamicProgramming dp;
-	// TabuSearch ts;
-	// SimulatedAnnealing sa;
-	// GeneticAlgorithm ga;
-
-	// NeighbourhoodType enumMenu();
+	TabuSearch ts;
+	SimulatedAnnealing sa;
+	GeneticAlgorithm ga;
 
 	void bfMenu();
 	void dpMenu();
 	void tsMenu();
 	void saMenu();
+	void saSettingsMenu();
 	void gaMenu();
+	void gaSettingsMenu();
+	void neighbourMenu();
 
-	void bruteForce(int multithread = 1);
-	void dynamicProgramming();
-
+	void setMatrixAll();
 	void displayResults(AlgorithmType a_type);
+	void setStopCriterium(int a_value);
 };

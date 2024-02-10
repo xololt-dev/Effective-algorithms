@@ -2,26 +2,27 @@
 #include <iostream>
 #include <string>
 
-void Matrix::loadFromFile(std::string fileName) {
+bool Matrix::loadFromFile(std::string fileName) {
 	int n = fileName.find(".txt");
 
 	if (n != std::string::npos
 		&& fileName.length() - n == 4) {
-		loadFromTXT(fileName);
-		return;
+		return loadFromTXT(fileName);
 	}
 
 	n = fileName.find(".atsp");
 
 	if (n != std::string::npos
 		&& fileName.length() - n == 5) {
-		loadFromATSP(fileName);
+		return loadFromATSP(fileName);
 	}
 	else
 		std::cout << "Nie mozna otworzyc pliku!\n";
+	
+	return false;
 }
 
-void Matrix::loadFromTXT(std::string fileName) {
+bool Matrix::loadFromTXT(std::string fileName) {
 	std::fstream file;
 	file.open(fileName, std::ios::in);
 
@@ -62,11 +63,14 @@ void Matrix::loadFromTXT(std::string fileName) {
 		}
 
 		file.close();
+		return true;
 	}
 	else std::cout << "Plik nie zostal otworzony!\n";
+
+	return false;
 }
 
-void Matrix::loadFromATSP(std::string fileName) {
+bool Matrix::loadFromATSP(std::string fileName) {
 	std::fstream file;
 	file.open(fileName, std::ios::in);
 
@@ -119,8 +123,12 @@ void Matrix::loadFromATSP(std::string fileName) {
 			file >> stringTemp;
 		}
 		file.close();
+
+		return true;
 	}
 	else std::cout << "Plik nie zostal otworzony!\n";
+
+	return false;
 }
 
 void Matrix::display() {
