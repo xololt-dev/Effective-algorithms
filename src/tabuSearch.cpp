@@ -1,8 +1,8 @@
-#include "util.hpp"
-/*
-void Menu::tabuSearch(Matrix* matrix) {
+#include "algorithms.hpp"
+
+void TabuSearch::run() {
 	// greedy path generator
-	std::tuple<std::vector<short>, int> t = generateInitialSolution(matrix);
+	std::tuple<std::vector<short>, int> t = generateInitialSolution();
 	int secondVertex = std::get<0>(t)[0];
 
 	tabu.clear();
@@ -16,7 +16,7 @@ void Menu::tabuSearch(Matrix* matrix) {
 
 	std::vector<short> currentSolutionOrder = std::get<0>(t), randomCandidateOrder, bestSolutionOrder = std::get<0>(t);
 	int currentSolutionLength = std::get<1>(t), bestSolutionLength = std::get<1>(t);
-	int tabuResize = 0, notImprovedStreak = 0, maxAllowedNonImprovement = getPathDelta(matrix) * matrix->size;
+	int tabuResize = 0, notImprovedStreak = 0, maxAllowedNonImprovement = getPathDelta() * matrix->size;
 
 	QueueData qData;
 	for (int i = matrix->size - 2; i > 0; i--)
@@ -24,7 +24,7 @@ void Menu::tabuSearch(Matrix* matrix) {
 	tabu.resize(tabuResize, 0);
 
 	std::cout << "\nTabu size: " << tabuResize << "\n";
-	std::cout << "Neighbourhood: " << currentNeighbourhoodType << "\n";
+	// std::cout << "Neighbourhood: " << currentNeighbourhoodType << "\n";
 	std::cout << "Max non improvement streak allowed: " << maxAllowedNonImprovement << "\n";
 
 	while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start) < maxExecutionTime) {
@@ -50,7 +50,7 @@ void Menu::tabuSearch(Matrix* matrix) {
 		else notImprovedStreak++;
 
 		if (notImprovedStreak > maxAllowedNonImprovement) {
-			t = generateNewSolution(matrix, secondVertex);
+			t = generateNewSolution(secondVertex);
 			currentSolutionOrder = std::get<0>(t);
 			currentSolutionLength = std::get<1>(t);
 			secondVertex = std::get<0>(t)[0];
@@ -65,82 +65,7 @@ void Menu::tabuSearch(Matrix* matrix) {
 	vertexOrder = bestSolutionOrder;
 }
 
-void Menu::tabuSearchBenchmark(Matrix* matrix, int iteration) {
-	// greedy path generator
-	std::tuple<std::vector<short>, int> t = generateInitialSolution(matrix);
-	int secondVertex = std::get<0>(t)[0];
-
-	tabu.clear();
-	runningTime = std::chrono::seconds(0);
-
-	std::cout << "\nDlugosc sciezki zachlannej: " << std::get<1>(t) << "\n";
-	std::cout << "Kolejnosc wierzcholkow:\n0 ";
-	for (auto a : std::get<0>(t)) std::cout << a << " ";
-	std::cout << "0\n";
-
-	std::fstream file;
-	file.open(benchmarkFile, std::fstream::app | std::fstream::out);
-	if (file.good()) {
-		file << currentNeighbourhoodType << ";" << iteration << ";" << std::chrono::duration_cast<std::chrono::microseconds>(runningTime).count() << ";" << std::get<1>(t) << ";0-";
-		for (auto a : std::get<0>(t)) file << a << "-";
-		file << "0\n";
-
-		std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
-
-		std::vector<short> currentSolutionOrder = std::get<0>(t), randomCandidateOrder, bestSolutionOrder = std::get<0>(t);
-		int currentSolutionLength = std::get<1>(t), bestSolutionLength = std::get<1>(t);
-		int tabuResize = 0, notImprovedStreak = 0, maxAllowedNonImprovement = getPathDelta(matrix) * matrix->size;
-
-		QueueData qData;
-		for (int i = matrix->size - 2; i > 0; i--)
-			tabuResize += i;
-		tabu.resize(tabuResize, 0);
-
-		while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start) < maxExecutionTime) {
-			// Generate candidate list
-			// Choose best candidate
-			qData = generateBestMove(&currentSolutionOrder, bestSolutionLength, &(matrix->mat));
-
-			currentSolutionOrder = qData.pathOrder;
-			currentSolutionLength = qData.pathLength;
-			if (qData.pathLength < bestSolutionLength) {
-				bestSolutionOrder = qData.pathOrder;
-				bestSolutionLength = qData.pathLength;
-				notImprovedStreak = 0;
-
-				runningTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start);
-
-				file << currentNeighbourhoodType << ";" << iteration << ";" << std::chrono::duration_cast<std::chrono::microseconds>(runningTime).count() << ";" << bestSolutionLength << ";0-";
-				for (auto a : bestSolutionOrder) file << a << "-";
-				file << "0\n";
-#ifdef _DEBUG 
-				std::cout << "\nDlugosc najlepszej sciezki: " << bestSolutionLength << "\n";
-				std::cout << "Kolejnosc wierzcholkow:\n0 ";
-				for (auto a : bestSolutionOrder) std::cout << a << " ";
-				std::cout << "0\n";
-#endif
-			}
-			else notImprovedStreak++;
-
-			if (notImprovedStreak > maxAllowedNonImprovement) {
-				t = generateNewSolution(matrix, secondVertex);
-				currentSolutionOrder = std::get<0>(t);
-				currentSolutionLength = std::get<1>(t);
-				secondVertex = std::get<0>(t)[0];
-				notImprovedStreak = 0;
-			}
-
-			updateTabu(qData.anchorOne, qData.anchorTwo, matrix->mat[0].size());
-		}
-
-		pathLength = bestSolutionLength;
-		vertexOrder = bestSolutionOrder;
-
-		file.close();
-	}
-}
-
-QueueData Menu::generateBestMove(std::vector<short>* currentOrder, int bestLength, std::vector<std::vector<int>>* matrix) {
+QueueData TabuSearch::generateBestMove(std::vector<short>* currentOrder, int bestLength, std::vector<std::vector<int>>* matrix) {
 	// Priority queue	
 	auto compare = [](QueueData x, QueueData y)
 		{return x.pathLength > y.pathLength; };
@@ -193,19 +118,19 @@ QueueData Menu::generateBestMove(std::vector<short>* currentOrder, int bestLengt
 	return tempData;
 }
 
-QueueData Menu::getNewOrder(std::vector<short>* currentOrder, int anchorOne, int anchorTwo, std::vector<std::vector<int>>* matrix) {
+QueueData TabuSearch::getNewOrder(std::vector<short>* currentOrder, int anchorOne, int anchorTwo, std::vector<std::vector<int>>* matrix) {
 	QueueData tempData;
 	short previousVertex = 0;
 
 	switch (currentNeighbourhoodType)
 	{
-	case INVERSE:
+	case NeighbourhoodType::INVERSE:
 		tempData.pathOrder = inverse(currentOrder, anchorOne, anchorTwo);
 		break;
-	case SWAP:
+	case NeighbourhoodType::SWAP:
 		tempData.pathOrder = swap(currentOrder, anchorOne, anchorTwo);
 		break;
-	case INSERT:
+	case NeighbourhoodType::INSERT:
 		tempData.pathOrder = insert(currentOrder, anchorOne, anchorTwo);
 		break;
 	default:
@@ -226,7 +151,7 @@ QueueData Menu::getNewOrder(std::vector<short>* currentOrder, int anchorOne, int
 	return tempData;
 }
 
-void Menu::updateTabu(int anchorOne, int anchorTwo, int matrixSize) {
+void TabuSearch::updateTabu(int anchorOne, int anchorTwo, int matrixSize) {
 	std::vector<short>::iterator iter = tabu.begin();
 
 	while (iter != tabu.end()) {
@@ -239,5 +164,3 @@ void Menu::updateTabu(int anchorOne, int anchorTwo, int matrixSize) {
 	int placeInTabu = (matrixSize - anchorOne + 1) * (anchorOne - 1) + (anchorTwo - anchorOne - 1);
 	tabu[placeInTabu] = 2 * sqrt(matrixSize);
 }
-
-*/

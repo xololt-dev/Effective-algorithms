@@ -1,7 +1,4 @@
-﻿// Effective-algorithms.cpp: definiuje punkt wejścia dla aplikacji.
-//
-
-#include "menu.hpp"
+﻿#include "menu.hpp"
 
 using namespace std;
 

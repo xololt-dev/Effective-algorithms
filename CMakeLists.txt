@@ -12,7 +12,8 @@ endif()
 project ("Effective-algorithms")
 
 # Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (Effective-algorithms "src/main.cpp" "include/menu.hpp" "src/util.cpp" "src/tabuSearch.cpp" "src/algorithms.cpp" "src/menu.cpp")
+add_executable (Effective-algorithms "src/main.cpp" "include/menu.hpp" "src/util.cpp" "src/tabuSearch.cpp" "src/algorithms.cpp" "src/menu.cpp" "src/geneticAlgorithm.cpp" "src/bruteForce.cpp" 
+"src/dynamicProgramming.cpp" "src/simulatedAnnealing.cpp")
 target_include_directories(Effective-algorithms PRIVATE "include")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

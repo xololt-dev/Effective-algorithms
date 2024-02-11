@@ -7,14 +7,6 @@
 
 #include <iostream>
 
-enum class AlgorithmType {
-	BruteForce,
-	DynamicProgramming,
-	TabuSearch,
-	SimulatedAnnealing,
-	GeneticAlgorithm
-};
-
 class Menu {
 public:
 	void mainMenu();
@@ -41,7 +33,7 @@ private:
 	void gaSettingsMenu();
 	void neighbourMenu();
 
+	void menuSetup();
 	void setMatrixAll();
-	void displayResults(AlgorithmType a_type);
 	void setStopCriterium(int a_value);
 };

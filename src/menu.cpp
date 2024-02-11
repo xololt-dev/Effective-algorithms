@@ -2,7 +2,17 @@
 
 #include <conio.h>
 
+void Menu::menuSetup() {
+	ts.initRandom();
+	sa.initRandom();
+	ga.initRandom();
+
+	setMatrixAll();
+}
+
 void Menu::mainMenu() {
+	menuSetup();
+
 	do {
 		std::cout << "==== MENU GLOWNE ====\n";
 		std::cout << "1.Wczytaj z pliku - " << fileName << "\n";
@@ -41,35 +51,30 @@ void Menu::mainMenu() {
 
 		case '4':
 			clear();
-			bf.setMatrix(&matrix);
 			bfMenu();
 			clear();
 			break;
 
 		case '5':
 			clear();
-			dp.setMatrix(&matrix);
 			dpMenu();
 			clear();
 			break;
 
 		case '6':
 			clear();
-			ts.setMatrix(&matrix);
 			tsMenu();
 			clear();
 			break;
 
 		case '7':
 			clear();
-			sa.setMatrix(&matrix);
 			saMenu();
 			clear();
 			break;
 
 		case '8':
 			clear();
-			ga.setMatrix(&matrix);
 			gaMenu();
 			clear();
 			break;
@@ -92,7 +97,7 @@ void Menu::bfMenu() {
 		std::cout << "Podaj opcje:";
 		option = _getche();
 		std::cout << std::endl;
-
+		
 		switch (option) {
 		case '1':
 			std::cout << " Podaj nazwe zbioru:";
@@ -578,28 +583,6 @@ void Menu::setMatrixAll() {
 	ts.setMatrix(&matrix);
 	sa.setMatrix(&matrix);
 	ga.setMatrix(&matrix);
-}
-
-void Menu::displayResults(AlgorithmType a_type) {
-	switch (a_type)	{
-	case AlgorithmType::BruteForce:
-		bf.displayResults();
-		break;
-	case AlgorithmType::DynamicProgramming:
-		dp.displayResults();
-		break;
-	case AlgorithmType::TabuSearch:
-		ts.displayResults();
-		break;
-	case AlgorithmType::SimulatedAnnealing:
-		sa.displayResults();
-		break;
-	case AlgorithmType::GeneticAlgorithm:
-		ga.displayResults();
-		break;
-	default:
-		break;
-	}
 }
 
 void Menu::setStopCriterium(int a_value) {
